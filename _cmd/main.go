@@ -39,19 +39,29 @@ func main() {
 
 func run(args []string) error {
 
-	var err error
+	if len(args) <= 0 {
+		return fmt.Errorf("Arguments error:Directory name Required.")
+	}
+
+	dir := args[0]
+
+	_, err := os.Stat(dir)
+	if err != nil {
+		return fmt.Errorf("Directory does not exits: %w", err)
+	}
+
+	generator.FPS = fps
+	generator.Width = width
+	generator.Height = height
+
 	if display {
-		if len(args) >= 1 {
-			dir := args[0]
-			err = generator.Display(dir)
-		} else {
-		}
+		err = generator.Display(dir)
 	} else {
 		if len(args) >= 2 {
-			dir := args[0]
 			name := args[1]
 			err = generator.Write(dir, name)
 		} else {
+			err = fmt.Errorf("Arguments error:Output file Required.")
 		}
 	}
 

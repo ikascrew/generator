@@ -1,6 +1,7 @@
 package generator
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -8,9 +9,15 @@ import (
 	"golang.org/x/xerrors"
 )
 
+var (
+	FPS    float64 = 30.0
+	Width  int     = 720
+	Height int     = 480
+)
+
 func Write(dir string, out string) error {
 
-	writer := NewFileWriter(out, 30.0)
+	writer := NewFileWriter(out, FPS)
 	defer writer.Close()
 
 	return write(writer, dir)
@@ -18,8 +25,7 @@ func Write(dir string, out string) error {
 
 func Display(dir string) error {
 
-	//win.SetWindowProperty(gocv.WindowPropertyAspectRatio, gocv.WindowKeepRatio)
-	writer := NewDisplayWriter(dir, 10)
+	writer := NewDisplayWriter(dir, int(1000.0/FPS))
 	defer writer.Close()
 
 	return write(writer, dir)
@@ -36,9 +42,10 @@ func write(w Writer, dir string) error {
 
 	var now *gocv.Mat
 	var next *gocv.Mat
-	dst := gocv.NewMatWithSize(480, 720, gocv.MatTypeCV8UC3)
 
 	for idx, file := range files {
+
+		fmt.Printf("files[%d]:%s\n", idx, file.Name())
 
 		if idx == 0 {
 			now, err = scale(filepath.Join(dir, file.Name()))
@@ -66,6 +73,7 @@ func write(w Writer, dir string) error {
 			return xerrors.Errorf("Scale() Error: %w", err)
 		}
 
+		dst := gocv.NewMatWithSize(480, 720, gocv.MatTypeCV8UC3)
 		for y := 0; y < 480; y++ {
 			err := split(dst, now, next, 0, y)
 			if err != nil {
@@ -73,6 +81,7 @@ func write(w Writer, dir string) error {
 			}
 			w.Write(&dst)
 		}
+		dst.Close()
 		now.Close()
 
 		//fmt.Println(gocv.MatProfile.Count())
@@ -80,7 +89,6 @@ func write(w Writer, dir string) error {
 		//gocv.MatProfile.WriteTo(&b, 1)
 		//fmt.Print(b.String())
 	}
-	dst.Close()
 
 	return nil
 }
