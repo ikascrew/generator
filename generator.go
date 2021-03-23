@@ -10,13 +10,13 @@ import (
 )
 
 var (
-	FPS    float64 = 30.0
-	Width  int     = 720
-	Height int     = 480
+	FPS     float64 = 30.0
+	Width   int     = 720
+	Height  int     = 480
+	Verbose bool    = false
 )
 
 func Write(dir string, out string) error {
-
 	writer := NewFileWriter(out, FPS)
 	defer writer.Close()
 
@@ -45,8 +45,9 @@ func write(w Writer, dir string) error {
 
 	for idx, file := range files {
 
-		fmt.Printf("files[%d]:%s\n", idx, file.Name())
-
+		if Verbose {
+			fmt.Printf("files[%d]:%s\n", idx, file.Name())
+		}
 		if idx == 0 {
 			now, err = scale(filepath.Join(dir, file.Name()))
 			if err != nil {
@@ -58,6 +59,8 @@ func write(w Writer, dir string) error {
 		} else {
 			now = next
 		}
+
+		//TODO どっち方向にスライドするかを受け取る
 
 		for row := 0; row < now.Rows()-480; row++ {
 			mat, err := now.FromPtr(480, 720, gocv.MatTypeCV8UC3, row, 0)
@@ -83,11 +86,6 @@ func write(w Writer, dir string) error {
 		}
 		dst.Close()
 		now.Close()
-
-		//fmt.Println(gocv.MatProfile.Count())
-		//var b bytes.Buffer
-		//gocv.MatProfile.WriteTo(&b, 1)
-		//fmt.Print(b.String())
 	}
 
 	return nil
