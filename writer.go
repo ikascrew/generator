@@ -69,8 +69,8 @@ func (w *DisplayWriter) Write(mat *gocv.Mat) error {
 		fps := 1000.0 / float64(sub.Milliseconds())
 
 		buf := fmt.Sprintf("FPS:%0.1f", fps)
-		gocv.Rectangle(mat, image.Rect(0, 0, 90, 20), color.RGBA{255, 255, 255, 0}, -1)
-		pt := image.Pt(5, 20)
+		gocv.Rectangle(mat, image.Rect(0, 0, 85, 20), color.RGBA{255, 255, 255, 0}, -1)
+		pt := image.Pt(3, 18)
 		gocv.PutText(mat, buf, pt, gocv.FontHersheyPlain, 1.2, color.RGBA{50, 255, 10, 0}, 2)
 		w.Before = now
 	}
