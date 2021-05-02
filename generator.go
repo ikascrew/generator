@@ -66,8 +66,8 @@ func write(w Writer, dir string) error {
 
 		//TODO どっち方向にスライドするかを受け取る
 
-		for row := 0; row < now.Rows()-Hight; row++ {
-			mat, err := now.FromPtr(Hight, Width, gocv.MatTypeCV8UC3, row, 0)
+		for row := 0; row < now.Rows()-Height; row++ {
+			mat, err := now.FromPtr(Height, Width, gocv.MatTypeCV8UC3, row, 0)
 			if err != nil {
 				return xerrors.Errorf("Mat FrtomPtr() Error: %w", err)
 			}
@@ -85,8 +85,8 @@ func write(w Writer, dir string) error {
 			return xerrors.Errorf("Scale() Error: %w", err)
 		}
 
-		dst := gocv.NewMatWithSize(Hight, Width, gocv.MatTypeCV8UC3)
-		for y := 0; y < Hight; y++ {
+		dst := gocv.NewMatWithSize(Height, Width, gocv.MatTypeCV8UC3)
+		for y := 0; y < Height; y++ {
 			err := split(dst, now, next, 0, y)
 			if err != nil {
 				return xerrors.Errorf("error: %w", err)
@@ -135,7 +135,7 @@ func readDir(root string) ([]string, error) {
 			return num1 < num2
 		}
 
-		err := nil
+		var err error
 		if err1 != nil {
 			err = err1
 		} else {
@@ -167,7 +167,7 @@ func readDir(root string) ([]string, error) {
 	}
 
 	if file && dir {
-		return nil, fmt.Errorf("file dir [%s]", root)
+		return nil, fmt.Errorf("mixed files and directories[%s]", root)
 	}
 	return files, nil
 }

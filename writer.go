@@ -22,7 +22,7 @@ type FileWriter struct {
 
 func NewFileWriter(file string, fps float64) *FileWriter {
 	var rtn FileWriter
-	writer, err := gocv.VideoWriterFile(file, "mp4v", fps, Width, Hight, true)
+	writer, err := gocv.VideoWriterFile(file, "mp4v", fps, Width, Height, true)
 	if err != nil {
 		log.Println(err)
 	}
@@ -54,7 +54,7 @@ func NewDisplayWriter(name string, w int) *DisplayWriter {
 	var rtn DisplayWriter
 
 	win := gocv.NewWindow("Display:" + name)
-	win.ResizeWindow(Width, Hight)
+	win.ResizeWindow(Width, Height)
 	win.SetWindowProperty(gocv.WindowPropertyAspectRatio, gocv.WindowKeepRatio)
 
 	rtn.Win = win

@@ -16,7 +16,7 @@ func scale(name string) (*gocv.Mat, error) {
 	}
 	defer img.Close()
 
-	dst := gocv.NewMatWithSize(Hight, Width, gocv.MatTypeCV8UC3)
+	dst := gocv.NewMatWithSize(Height, Width, gocv.MatTypeCV8UC3)
 
 	scale := float64(dst.Cols()) / float64(img.Cols())
 	gocv.Resize(img, &dst, image.Point{0, 0}, scale, scale, gocv.InterpolationLinear)
@@ -28,8 +28,8 @@ func scale(name string) (*gocv.Mat, error) {
 func split(dst gocv.Mat, up, down *gocv.Mat, x, y int) error {
 
 	rows := up.Rows()
-	y1 := rows - Hight + y
-	mat1, err := up.FromPtr(Hight-y, Width, gocv.MatTypeCV8UC3, y1, 0)
+	y1 := rows - Height + y
+	mat1, err := up.FromPtr(Height-y, Width, gocv.MatTypeCV8UC3, y1, 0)
 	if err != nil {
 		return xerrors.Errorf("up.FromPtr() error: %w", err)
 	}
@@ -44,7 +44,7 @@ func split(dst gocv.Mat, up, down *gocv.Mat, x, y int) error {
 	}
 	defer mat2.Close()
 
-	y2 := Hight - y - 1
+	y2 := Height - y - 1
 	p2 := dst.Region(image.Rect(0, y2, mat2.Cols(), mat2.Rows()+y2))
 	defer p2.Close()
 
