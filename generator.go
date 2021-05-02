@@ -2,6 +2,7 @@ package generator
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"sort"
@@ -40,16 +41,19 @@ func write(w Writer, dir string) error {
 
 	files, err := readDir(dir)
 	if err != nil {
-		return xerrors.Errorf("os.Readdir() Error: %w", err)
+		return xerrors.Errorf("readdir() Error: %w", err)
 	}
 
+	if Verbose {
+		fmt.Printf("number of files[%d]\n", len(files))
+	}
 	var now *gocv.Mat
 	var next *gocv.Mat
 
 	for idx, file := range files {
 
 		if Verbose {
-			fmt.Printf("files[%d]:%s\n", idx, file)
+			fmt.Printf("files[%d]:%s\n", idx+1, file)
 		}
 		if idx == 0 {
 			now, err = scale(file)
@@ -126,8 +130,20 @@ func readDir(root string) ([]string, error) {
 		}
 
 		if err1 != nil && err2 != nil {
+			return name1 < name2
+		} else {
 			return num1 < num2
 		}
+
+		err := nil
+		if err1 != nil {
+			err = err1
+		} else {
+			err = err2
+		}
+
+		log.Printf("filename sort warning:%s %s\n%v\n", name1, name2, err)
+
 		return name1 < name2
 	})
 
