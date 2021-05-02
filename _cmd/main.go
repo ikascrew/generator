@@ -22,7 +22,7 @@ func init() {
 	flag.IntVar(&width, "w", 720, "")
 	flag.IntVar(&height, "h", 480, "")
 	flag.StringVar(&mode, "mode", "slide", "")
-	flag.Float64Var(&fps, "fps", 30.0, "")
+	flag.Float64Var(&fps, "fps", 100.0, "")
 	flag.BoolVar(&display, "d", false, "display flag()")
 	flag.BoolVar(&verbose, "v", false, "print verbose")
 }
@@ -62,12 +62,11 @@ func run(args []string) error {
 	if display {
 		err = generator.Display(dir)
 	} else {
+		name := dir + ".mp4"
 		if len(args) >= 2 {
-			name := args[1]
-			err = generator.Write(dir, name)
-		} else {
-			err = fmt.Errorf("Arguments error:Output file Required.")
+			name = args[1]
 		}
+		err = generator.Write(dir, name)
 	}
 
 	if err != nil {
