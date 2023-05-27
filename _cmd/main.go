@@ -4,11 +4,13 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/ikascrew/generator"
 	"golang.org/x/xerrors"
 )
 
+//ディレクトリを動画にする
 var (
 	width   int
 	height  int
@@ -62,9 +64,11 @@ func run(args []string) error {
 	if display {
 		err = generator.Display(dir)
 	} else {
-		name := dir + ".mp4"
+		name := ""
 		if len(args) >= 2 {
 			name = args[1]
+		} else {
+			name = filepath.Clean(dir) + ".mp4"
 		}
 		err = generator.Write(dir, name)
 	}
